@@ -1,4 +1,4 @@
-#BSモデル：コールオプション
+#BSモデル
 from scipy.stats import norm
 from math import exp,log,sqrt
 def BS_Call(S0, sigma ,r,T,K):
