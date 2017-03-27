@@ -1,0 +1,70 @@
+'Max関数の定義
+Function MyMax(ByRef Num1 As Double, ByRef Num2 As Double) As Double
+    If Num1 > Num2 Then
+        MyMax = Num1
+    Else
+        MyMax = Num2
+    End If
+End Function
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'株価過程の定義
+Function StockProcess_Euler(ByVal S0 As Double, _
+                                ByVal sigma As Double, _
+                                ByVal mu As Double, _
+                                ByVal dt As Double, _
+                                ByVal 分割数 As Integer) As Double
+Dim St As Double, i As Integer
+St = S0
+For i = 1 To 分割数
+    St = St + mu * St * dt + sigma * St * 正規乱数 * Sqr(dt)
+Next i
+StockProcess_Euler = St
+End Function
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+'BSモデル：モンテカルロ、オイラー法、コール
+Function MCBS_Call_Euler(ByVal S As Double, _
+                            ByVal sigma As Double, _
+                            ByVal r As Double, _
+                            ByVal T As Double, _
+                            ByVal K As Double, _
+                            ByVal 分割数 As Integer, _
+                            ByVal dt As Double, _
+                            ByVal SampleNo As Long) As Double
+    Dim i As Long, Payoff As Double, SumPayoff As Double
+    Dim ExpectedPayoff As Double, OptionPrice As Double, S_T As Double
+    SumPayoff = 0
+    For i = 1 To SampleNo
+        S_T = StockProcess_Euler(S, sigma, r, dt, 分割数)
+        Payoff = MyMax(S_T - K, 0)
+        SumPayoff = SumPayoff + Payoff
+    Next i
+    ExpectedPayoff = SumPayoff / SampleNo
+    OptionPrice = ExpectedPayoff * Exp(-r * T)
+    MCBS_Call_Euler = OptionPrice
+End Function
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+'BSモデル：モンテカルロ、オイラー法、put
+Function MCBS_Put_Euler(ByVal S As Double, _
+                            ByVal sigma As Double, _
+                            ByVal r As Double, _
+                            ByVal T As Double, _
+                            ByVal K As Double, _
+                            ByVal 分割数 As Integer, _
+                            ByVal dt As Double, _
+                            ByVal SampleNo As Long) As Double
+    Dim i As Long, Payoff As Double, SumPayoff As Double
+    Dim ExpectedPayoff As Double, OptionPrice As Double, S_T As Double
+    SumPayoff = 0
+    For i = 1 To SampleNo
+        S_T = StockProcess_Euler(S, sigma, r, dt, 分割数)
+        Payoff = MyMax(K - S_T, 0)
+        SumPayoff = SumPayoff + Payoff
+    Next i
+    ExpectedPayoff = SumPayoff / SampleNo
+    OptionPrice = ExpectedPayoff * Exp(-r * T)
+    MCBS_Put_Euler = OptionPrice
+End Function
+
+#Refference:大野 薫, モンテカルロ法によるリアル・オプション分析―事業計画の戦略的評価, 2012, きんざい
