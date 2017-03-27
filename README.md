@@ -1,4 +1,5 @@
-# VBA_financial_engineering
-VBA codes on financial engineering
+# Financial_engineering
+Codes on financial engineering
 
-このリポジトリはVBAによる金融工学関連のコードを格納している。
+このリポジトリは金融工学関連のコードを格納している。
+"VBA"と"Python"のコードを載せる。
