@@ -1,0 +1,49 @@
+'
+Function 対数株価プロセス(ByVal S As Double, _
+                                ByVal sigma As Double, _
+                                ByVal mu As Double, _
+                                ByVal dt As Double, _
+                                ByVal ε As Double) As Double
+対数株価プロセス = S * Exp((mu - sigma ^ 2 / 2) * dt + sigma * Sqr(dt) * ε)
+End Function
+
+
+'BSモデル：モンテカルロ、正確な離散、コール
+Function MCBS_Call(ByVal S As Double, _
+                            ByVal sigma As Double, _
+                            ByVal r As Double, _
+                            ByVal T As Double, _
+                            ByVal K As Double, _
+                            ByVal SampleNo As Long) As Double
+    Dim i As Long, Payoff As Double, SumPayoff As Double
+    Dim ExpectedPayoff As Double, OptionPrice As Double, S_T As Double
+    SumPayoff = 0
+    For i = 1 To SampleNo
+        S_T = 対数株価プロセス(S, sigma, r, T, 正規乱数)
+        Payoff = MyMax(S_T - K, 0)
+        SumPayoff = SumPayoff + Payoff
+    Next i
+    ExpectedPayoff = SumPayoff / SampleNo
+    OptionPrice = ExpectedPayoff * Exp(-r * T)
+    MCBS_Call = OptionPrice
+End Function
+
+'BSモデル：モンテカルロ、正確な離散、プット
+Function MCBS_Put(ByVal S As Double, _
+                            ByVal sigma As Double, _
+                            ByVal r As Double, _
+                            ByVal T As Double, _
+                            ByVal K As Double, _
+                            ByVal SampleNo As Long) As Double
+    Dim i As Long, Payoff As Double, SumPayoff As Double
+    Dim ExpectedPayoff As Double, OptionPrice As Double, S_T As Double
+    SumPayoff = 0
+    For i = 1 To SampleNo
+        S_T = 対数株価プロセス(S, sigma, r, T, 正規乱数)
+        Payoff = MyMax(K - S_T, 0)
+        SumPayoff = SumPayoff + Payoff
+    Next i
+    ExpectedPayoff = SumPayoff / SampleNo
+    OptionPrice = ExpectedPayoff * Exp(-r * T)
+    MCBS_Put = OptionPrice
+End Function
