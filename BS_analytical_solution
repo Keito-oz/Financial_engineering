@@ -1,0 +1,29 @@
+'BSモデル：コールオプション
+Function BS_Call(ByVal S0 As Double, _
+                    ByVal sigma As Double, _
+                    ByVal r As Double, _
+                    ByVal q As Double, _
+                    ByVal T As Double, _
+                    ByVal K As Double) As Double
+    
+    Dim d1 As Double, d2 As Double
+    d1 = (Log(S0 / K) + (r - q + sigma ^ 2 / 2) * T) / (sigma * Sqr(T))
+    d2 = d1 - sigma * Sqr(T)
+    BS_Call = S0 * Exp(-q * T) * Application.NormSDist(d1) - K * Exp(-r * T) * Application.NormSDist(d2)
+    
+End Function
+
+'BSモデル：putオプション
+Function BS_Put(ByVal S0 As Double, _
+                    ByVal sigma As Double, _
+                    ByVal r As Double, _
+                    ByVal q As Double, _
+                    ByVal T As Double, _
+                    ByVal K As Double) As Double
+    
+    Dim d1 As Double, d2 As Double
+    d1 = (Log(S0 / K) + (r - q + sigma ^ 2 / 2) * T) / (sigma * Sqr(T))
+    d2 = d1 - sigma * Sqr(T)
+    BS_Put = K * Exp(-r * T) * Application.NormSDist(-d2) - S0 * Exp(-q * T) * Application.NormSDist(-d1)
+    
+End Function
